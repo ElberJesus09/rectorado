@@ -1,3 +1,4 @@
+// src/components/CalendarList.tsx
 import React, { useEffect, useState } from "react";
 import AddEventModal from "./AddEventModal";
 import { useCalendarService } from "../services/useCalendarService";
@@ -19,25 +20,26 @@ export type CalendarEvent = {
     sheetRowNumber?: number;
 };
 
+// 👇 Actualizado para Modo Oscuro
 const getColorByEstado = (estado?: string) => {
     switch (estado) {
         case "Pendiente":
-            return "bg-yellow-100 text-yellow-800 border-l-4 border-yellow-500 shadow-sm";
+            return "bg-yellow-100 text-yellow-800 border-l-4 border-yellow-500 shadow-sm dark:bg-yellow-900/30 dark:text-yellow-200 dark:border-yellow-600";
         case "En curso":
-            return "bg-blue-100 text-blue-800 border-l-4 border-blue-500 shadow-sm";
+            return "bg-blue-100 text-blue-800 border-l-4 border-blue-500 shadow-sm dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-500";
         case "Completado":
-            return "bg-green-100 text-green-800 border-l-4 border-green-500 shadow-sm";
+            return "bg-green-100 text-green-800 border-l-4 border-green-500 shadow-sm dark:bg-green-900/30 dark:text-green-200 dark:border-green-500";
         case "Cancelado":
-            return "bg-red-100 text-red-800 border-l-4 border-red-500 shadow-sm";
+            return "bg-red-100 text-red-800 border-l-4 border-red-500 shadow-sm dark:bg-red-900/30 dark:text-red-200 dark:border-red-500";
         default:
-            return "bg-gray-100 text-gray-700 border-l-4 border-gray-400 shadow-sm";
+            return "bg-gray-100 text-gray-700 border-l-4 border-gray-400 shadow-sm dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500";
     }
 };
 
 type ViewMode = "Mes" | "Semana" | "Día";
 
 const formatDate = (d: Date) =>
-`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
 const mapRawToEvent = (raw: RawCalendarRow): CalendarEvent => {
     return {
@@ -66,7 +68,7 @@ const CalendarList: React.FC = () => {
     } = useCalendarService();
 
     const today = new Date();
-    
+
     const [currentNavDate, setCurrentNavDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -180,10 +182,10 @@ const CalendarList: React.FC = () => {
     const getEventsForDay = (date: string) => {
         return expandedEvents.filter((event) => {
             if (!event.fechaInicio) return false;
-            
+
             const eventDate = new Date(event.fechaInicio);
             const targetDate = new Date(date);
-            
+
             return eventDate.toDateString() === targetDate.toDateString();
         });
     };
@@ -217,27 +219,27 @@ const CalendarList: React.FC = () => {
         const monthNameDay = dateToRender.toLocaleDateString("es-ES", { month: "long" });
 
         return (
-            <div className="bg-white rounded-xl shadow-lg p-6 max-w-lg mx-auto">
-                <h3 className="text-2xl font-bold mb-4 text-center capitalize text-blue-600">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 max-w-lg mx-auto border dark:border-gray-700">
+                <h3 className="text-2xl font-bold mb-4 text-center capitalize text-blue-600 dark:text-blue-400">
                     {dayName}, {dayOfMonth} de {monthNameDay}
                 </h3>
-                <div className="border-t pt-4">
+                <div className="border-t dark:border-gray-700 pt-4">
                     {dayEvents.length ? (
                         <div className="space-y-3">
                             {dayEvents.map((ev, idx) => (
                                 <div key={idx} className={`p-3 rounded-lg text-sm transition ${getColorByEstado(ev.estado)}`}>
                                     <p className="font-bold text-base">{ev.nombre}</p>
                                     {(ev.horaInicio || ev.horaFin) && (
-                                        <p className="text-xs mt-1">⏰ {ev.horaInicio} - {ev.horaFin}</p>
+                                        <p className="text-xs mt-1 opacity-90">⏰ {ev.horaInicio} - {ev.horaFin}</p>
                                     )}
-                                    {ev.lugar && <p className="text-xs mt-1">📍 {ev.lugar}</p>}
-                                    {ev.descripcion && <p className="text-xs mt-1 text-gray-700">{ev.descripcion}</p>}
-                                    <p className="text-xs mt-1 font-medium">Estado: {ev.estado}</p>
+                                    {ev.lugar && <p className="text-xs mt-1 opacity-90">📍 {ev.lugar}</p>}
+                                    {ev.descripcion && <p className="text-xs mt-1 opacity-80">{ev.descripcion}</p>}
+                                    <p className="text-xs mt-1 font-medium opacity-90">Estado: {ev.estado}</p>
                                 </div>
                             ))}
                         </div>
                     ) : (
-                        <p className="text-center text-gray-500 italic py-8">🎉 ¡Sin eventos para este día!</p>
+                        <p className="text-center text-gray-500 dark:text-gray-400 italic py-8">🎉 ¡Sin eventos para este día!</p>
                     )}
                 </div>
             </div>
@@ -248,7 +250,7 @@ const CalendarList: React.FC = () => {
         const weekDays = getWeekDays();
         return (
             <div>
-                <div className="grid grid-cols-7 text-center font-bold text-gray-800 mb-2 border-b pb-2">
+                <div className="grid grid-cols-7 text-center font-bold text-gray-800 dark:text-gray-200 mb-2 border-b dark:border-gray-700 pb-2">
                     {weekDayNames.map((d) => (
                         <div key={d} className="hidden sm:block">{d}</div>
                     ))}
@@ -268,9 +270,13 @@ const CalendarList: React.FC = () => {
                             <div
                                 key={dateStr}
                                 onClick={() => handleDayClick(dateStr)}
-                                className={`border border-gray-200 rounded-xl p-3 min-h-[120px] bg-white cursor-pointer shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 ${isToday ? 'border-blue-500 ring-2 ring-blue-300' : ''}`}
+                                className={`border rounded-xl p-3 min-h-[120px] cursor-pointer shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 
+                                    ${isToday
+                                        ? 'border-blue-500 ring-2 ring-blue-300 dark:ring-blue-800 bg-white dark:bg-gray-800'
+                                        : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750'
+                                    }`}
                             >
-                                <div className="text-sm font-bold text-blue-600 mb-2">
+                                <div className="text-sm font-bold text-blue-600 dark:text-blue-400 mb-2">
                                     {dayName} <span className="text-xl">{day}</span>
                                 </div>
                                 <div className="space-y-1 overflow-auto max-h-[80px]">
@@ -280,7 +286,7 @@ const CalendarList: React.FC = () => {
                                         </div>
                                     ))}
                                     {dayEvents.length > 2 && (
-                                        <div className="text-xs text-gray-500 mt-1">+{dayEvents.length - 2} más</div>
+                                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">+{dayEvents.length - 2} más</div>
                                     )}
                                 </div>
                             </div>
@@ -297,7 +303,7 @@ const CalendarList: React.FC = () => {
 
         return (
             <div>
-                <div className="grid grid-cols-7 text-center font-bold text-gray-700 mb-2 border-b pb-2">
+                <div className="grid grid-cols-7 text-center font-bold text-gray-700 dark:text-gray-300 mb-2 border-b dark:border-gray-700 pb-2">
                     {weekDayNames.map((d) => (
                         <div key={d} className="hidden sm:block">{d}</div>
                     ))}
@@ -307,7 +313,7 @@ const CalendarList: React.FC = () => {
                 </div>
                 <div className="grid grid-cols-7 gap-1 sm:gap-2">
                     {emptyCells.map((_, i) => (
-                        <div key={`empty-${i}`} className="min-h-[100px] bg-gray-50 rounded-lg"></div>
+                        <div key={`empty-${i}`} className="min-h-[100px] bg-gray-50 dark:bg-gray-800/30 rounded-lg"></div>
                     ))}
 
                     {days.map((day) => {
@@ -318,10 +324,14 @@ const CalendarList: React.FC = () => {
                         return (
                             <div
                                 key={date}
-                                className={`border rounded-xl p-2 min-h-[100px] bg-white cursor-pointer shadow-sm hover:scale-[1.02] hover:shadow-md transition duration-200 ease-in-out ${isToday ? 'border-blue-500 ring-2 ring-blue-300' : 'border-gray-200'}`}
+                                className={`border rounded-xl p-2 min-h-[100px] cursor-pointer shadow-sm hover:scale-[1.02] hover:shadow-md transition duration-200 ease-in-out
+                                    ${isToday
+                                        ? 'border-blue-500 ring-2 ring-blue-300 dark:ring-blue-800 bg-white dark:bg-gray-800'
+                                        : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750'
+                                    }`}
                                 onClick={() => handleDayClick(date)}
                             >
-                                <div className={`text-lg font-extrabold ${isToday ? 'text-blue-600' : 'text-gray-800'}`}>{day}</div>
+                                <div className={`text-lg font-extrabold ${isToday ? 'text-blue-600 dark:text-blue-400' : 'text-gray-800 dark:text-gray-200'}`}>{day}</div>
                                 <div className="mt-1 space-y-1 overflow-hidden max-h-[70px]">
                                     {dayEvents.slice(0, 2).map((ev, idx) => (
                                         <div
@@ -332,7 +342,7 @@ const CalendarList: React.FC = () => {
                                         </div>
                                     ))}
                                     {dayEvents.length > 2 && (
-                                        <div className="text-xs text-gray-500 mt-1">+{dayEvents.length - 2} más</div>
+                                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">+{dayEvents.length - 2} más</div>
                                     )}
                                 </div>
                             </div>
@@ -349,25 +359,25 @@ const CalendarList: React.FC = () => {
     }
 
     return (
-        <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4 bg-white p-4 rounded-xl shadow-lg sticky top-0 z-10">
+        <div className="p-4 sm:p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-lg sticky top-0 z-10 dark:shadow-gray-900/50">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => changeDate(-1)}
-                        className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition"
+                        className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 transition"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
 
-                    <h2 className="text-xl sm:text-3xl font-extrabold capitalize text-gray-800 whitespace-nowrap">
+                    <h2 className="text-xl sm:text-3xl font-extrabold capitalize text-gray-800 dark:text-white whitespace-nowrap">
                         🗓️ {renderNavigationText()}
                     </h2>
 
                     <button
                         onClick={() => changeDate(1)}
-                        className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition"
+                        className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 transition"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -375,12 +385,14 @@ const CalendarList: React.FC = () => {
                     </button>
                 </div>
 
-                <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
+                <div className="flex gap-2 p-1 bg-gray-100 dark:bg-gray-700 rounded-lg">
                     {((["Día", "Semana", "Mes"] as ViewMode[])).map((mode) => (
                         <button
                             key={mode}
                             onClick={() => handleViewModeChange(mode)}
-                            className={`px-3 py-1.5 text-sm rounded-md font-semibold transition duration-200 ${viewMode === mode ? "bg-blue-600 text-white shadow-md" : "text-gray-700 hover:bg-white"
+                            className={`px-3 py-1.5 text-sm rounded-md font-semibold transition duration-200 ${viewMode === mode
+                                    ? "bg-blue-600 text-white shadow-md"
+                                    : "text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-600"
                                 }`}
                         >
                             {mode}
@@ -402,7 +414,7 @@ const CalendarList: React.FC = () => {
             </div>
 
             {calendarError && (
-                <div className="mb-6 p-3 bg-red-100 text-red-800 rounded-lg font-medium border border-red-300">
+                <div className="mb-6 p-3 bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-200 rounded-lg font-medium border border-red-300 dark:border-red-700">
                     🚨 Error de calendario: {calendarError}
                 </div>
             )}

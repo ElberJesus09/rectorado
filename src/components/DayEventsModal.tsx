@@ -61,15 +61,15 @@ const DayEventsModal: React.FC<DayEventsModalProps> = ({
     const getColorByEstado = (estado?: string) => {
         switch (estado) {
             case "Pendiente":
-                return "bg-yellow-100 text-yellow-800 border-l-4 border-yellow-500 shadow-sm";
+                return "bg-yellow-100 text-yellow-800 border-l-4 border-yellow-500 shadow-sm dark:bg-yellow-900/40 dark:text-yellow-100 dark:border-yellow-600";
             case "En curso":
-                return "bg-blue-100 text-blue-800 border-l-4 border-blue-500 shadow-sm";
+                return "bg-blue-100 text-blue-800 border-l-4 border-blue-500 shadow-sm dark:bg-blue-900/40 dark:text-blue-100 dark:border-blue-600";
             case "Completado":
-                return "bg-green-100 text-green-800 border-l-4 border-green-500 shadow-sm";
+                return "bg-green-100 text-green-800 border-l-4 border-green-500 shadow-sm dark:bg-green-900/40 dark:text-green-100 dark:border-green-600";
             case "Cancelado":
-                return "bg-red-100 text-red-800 border-l-4 border-red-500 shadow-sm";
+                return "bg-red-100 text-red-800 border-l-4 border-red-500 shadow-sm dark:bg-red-900/40 dark:text-red-100 dark:border-red-600";
             default:
-                return "bg-gray-100 text-gray-700 border-l-4 border-gray-400 shadow-sm";
+                return "bg-gray-100 text-gray-700 border-l-4 border-gray-400 shadow-sm dark:bg-gray-700 dark:text-gray-200 dark:border-gray-500";
         }
     };
 
@@ -103,10 +103,10 @@ const DayEventsModal: React.FC<DayEventsModalProps> = ({
     return (
         <>
             <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-                <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-lg relative border border-gray-100 max-h-[90vh] overflow-y-auto">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-2xl w-full max-w-lg relative border border-gray-100 dark:border-gray-700 max-h-[90vh] overflow-y-auto">
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition"
+                        className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition"
                         aria-label="Cerrar modal"
                     >
                         <svg
@@ -125,12 +125,12 @@ const DayEventsModal: React.FC<DayEventsModalProps> = ({
                         </svg>
                     </button>
 
-                    <h3 className="text-2xl font-bold mb-4 text-gray-800 border-b pb-3 capitalize">
+                    <h3 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white border-b dark:border-gray-700 pb-3 capitalize">
                         {formattedDate}
                     </h3>
 
                     <div className="mb-4 flex justify-between items-center">
-                        <span className="text-sm text-gray-600 font-medium">
+                        <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">
                             {eventsForDay.length} evento{eventsForDay.length !== 1 ? 's' : ''} programado{eventsForDay.length !== 1 ? 's' : ''}
                         </span>
                     </div>
@@ -144,14 +144,14 @@ const DayEventsModal: React.FC<DayEventsModalProps> = ({
                                 >
                                     <div className="flex justify-between items-start">
                                         <h4 className="font-bold text-base flex-1">{ev.nombre}</h4>
-                                        <span className="text-xs font-semibold px-2 py-1 rounded-full bg-white bg-opacity-50">
+                                        <span className="text-xs font-semibold px-2 py-1 rounded-full bg-white bg-opacity-50 dark:bg-black dark:bg-opacity-20">
                                             {ev.estado}
                                         </span>
                                     </div>
 
                                     {(ev.horaInicio || ev.horaFin) && (
                                         <div className="flex items-center gap-1 text-sm">
-                                            <span className="text-gray-600">⏰</span>
+                                            <span className="text-gray-600 dark:text-inherit opacity-75">⏰</span>
                                             <span className="font-medium">
                                                 {formatTime(ev.horaInicio)} 
                                                 {ev.horaFin && ` - ${formatTime(ev.horaFin)}`}
@@ -161,25 +161,25 @@ const DayEventsModal: React.FC<DayEventsModalProps> = ({
 
                                     {ev.lugar && (
                                         <div className="flex items-center gap-1 text-sm">
-                                            <span className="text-gray-600">📍</span>
-                                            <span className="text-gray-700">{ev.lugar}</span>
+                                            <span className="text-gray-600 dark:text-inherit opacity-75">📍</span>
+                                            <span className="text-gray-700 dark:text-inherit">{ev.lugar}</span>
                                         </div>
                                     )}
 
                                     {ev.descripcion && (
-                                        <p className="text-sm text-gray-700 mt-1 bg-white bg-opacity-50 p-2 rounded">
+                                        <p className="text-sm text-gray-700 dark:text-inherit mt-1 bg-white bg-opacity-50 dark:bg-black dark:bg-opacity-20 p-2 rounded">
                                             {ev.descripcion}
                                         </p>
                                     )}
 
                                     {ev.diasRepetidos && (
-                                        <div className="flex items-center gap-1 text-xs text-gray-600 mt-1">
+                                        <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-inherit opacity-75 mt-1">
                                             <span>🔄</span>
                                             <span>Se repite: {ev.diasRepetidos}</span>
                                         </div>
                                     )}
 
-                                    <div className="flex justify-end gap-2 mt-3 pt-2 border-t border-opacity-30">
+                                    <div className="flex justify-end gap-2 mt-3 pt-2 border-t border-opacity-30 dark:border-opacity-30 border-gray-400 dark:border-gray-400">
                                         <button
                                             onClick={() => onEditEvent(ev)}
                                             className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-1"
@@ -201,19 +201,19 @@ const DayEventsModal: React.FC<DayEventsModalProps> = ({
                     ) : (
                         <div className="text-center py-8">
                             <div className="text-6xl mb-4">📅</div>
-                            <p className="text-gray-500 italic text-lg mb-2">
+                            <p className="text-gray-500 dark:text-gray-400 italic text-lg mb-2">
                                 No hay eventos programados
                             </p>
-                            <p className="text-gray-400 text-sm">
+                            <p className="text-gray-400 dark:text-gray-500 text-sm">
                                 ¡Agrega un nuevo evento para comenzar!
                             </p>
                         </div>
                     )}
 
-                    <div className="flex justify-end pt-6 border-t mt-6 gap-3">
+                    <div className="flex justify-end pt-6 border-t dark:border-gray-700 mt-6 gap-3">
                         <button
                             onClick={onClose}
-                            className="bg-gray-200 text-gray-700 font-semibold py-2 px-5 rounded-xl hover:bg-gray-300 transition shadow-md"
+                            className="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold py-2 px-5 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition shadow-md"
                         >
                             Cerrar
                         </button>

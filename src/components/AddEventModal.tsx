@@ -30,8 +30,8 @@ const AddEventModal: React.FC<AddEventModalProps> = ({
         : "Nuevo Evento";
 
     const inputClasses =
-        "w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150 shadow-sm placeholder-gray-400";
-    const labelClasses = "block text-sm font-semibold text-gray-700 mb-1";
+        "w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150 shadow-sm placeholder-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400";
+    const labelClasses = "block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1";
 
     const daysOfWeek = [
         { value: "Lunes", label: "Lunes" },
@@ -69,10 +69,10 @@ const AddEventModal: React.FC<AddEventModalProps> = ({
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50 p-4 ">
-            <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-lg relative border border-gray-100 transform transition-all duration-300 scale-100 max-h-[90vh] overflow-y-auto">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-2xl w-full max-w-lg relative border border-gray-100 dark:border-gray-700 transform transition-all duration-300 scale-100 max-h-[90vh] overflow-y-auto">
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition"
+                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition"
                     aria-label="Cerrar modal"
                 >
                     <svg
@@ -91,7 +91,7 @@ const AddEventModal: React.FC<AddEventModalProps> = ({
                     </svg>
                 </button>
 
-                <h3 className="text-2xl font-bold mb-4 text-gray-800 border-b pb-3 capitalize">
+                <h3 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white border-b dark:border-gray-700 pb-3 capitalize">
                     {formattedDateTitle}
                 </h3>
 
@@ -227,8 +227,8 @@ const AddEventModal: React.FC<AddEventModalProps> = ({
                         </select>
                         
                         {showCustomSelector && (
-                            <div className="mt-3 p-3 border border-gray-300 rounded-lg bg-gray-50">
-                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            <div className="mt-3 p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700">
+                                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     Selecciona los días:
                                 </label>
                                 <div className="grid grid-cols-2 gap-2">
@@ -238,38 +238,38 @@ const AddEventModal: React.FC<AddEventModalProps> = ({
                                                 type="checkbox"
                                                 checked={customDays.includes(day.value)}
                                                 onChange={() => handleDayToggle(day.value)}
-                                                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                                className="rounded border-gray-300 dark:border-gray-500 dark:bg-gray-600 text-blue-600 focus:ring-blue-500"
                                             />
-                                            <span className="text-sm text-gray-700">{day.label}</span>
+                                            <span className="text-sm text-gray-700 dark:text-gray-300">{day.label}</span>
                                         </label>
                                     ))}
                                 </div>
                                 {customDays.length > 0 && (
-                                    <p className="text-xs text-green-600 mt-2">
+                                    <p className="text-xs text-green-600 dark:text-green-400 mt-2">
                                         Días seleccionados: {customDays.join(', ')}
                                     </p>
                                 )}
                             </div>
                         )}
                         
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                             Selecciona días específicos para repetición semanal
                         </p>
                     </div>
 
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                        <h4 className="font-semibold text-blue-800 mb-2">💡 Información sobre repeticiones</h4>
-                        <p className="text-xs text-blue-700">
+                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                        <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-2">💡 Información sobre repeticiones</h4>
+                        <p className="text-xs text-blue-700 dark:text-blue-200">
                             • Si defines fechas de inicio y fin diferentes, el evento se expandirá automáticamente a todos los días en ese rango.<br/>
                             • Si seleccionas días de repetición, el evento solo aparecerá en esos días específicos dentro del rango de fechas.
                         </p>
                     </div>
                 </div>
 
-                <div className="flex justify-end gap-3 pt-6 border-t mt-6">
+                <div className="flex justify-end gap-3 pt-6 border-t dark:border-gray-700 mt-6">
                     <button
                         onClick={onClose}
-                        className="bg-gray-200 text-gray-700 font-semibold py-2 px-5 rounded-xl hover:bg-gray-300 transition shadow-md"
+                        className="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold py-2 px-5 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition shadow-md"
                     >
                         Cancelar
                     </button>

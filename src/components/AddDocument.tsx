@@ -9,22 +9,22 @@ export interface NewDocumentData {
 }
 
 interface AddDocumentProps {
-    onAddRow: (data: NewDocumentData, file?: File) => Promise<void>; 
+    onAddRow: (data: NewDocumentData, file?: File) => Promise<void>;
     disabled: boolean;
-    onSuccess?: () => void; 
+    onSuccess?: () => void;
 }
 
 const initialFormData: NewDocumentData = {
-    fecha: new Date().toISOString().slice(0, 10), 
+    fecha: new Date().toISOString().slice(0, 10),
     'exp. mesa de partes / sec. gen.': '',
     'dependencia / usuario': '',
     asunto: '',
 };
 
-const AddDocument: React.FC<AddDocumentProps> = ({ onAddRow,  disabled, onSuccess }) => {
+const AddDocument: React.FC<AddDocumentProps> = ({ onAddRow, disabled, onSuccess }) => {
     const [formData, setFormData] = useState<NewDocumentData>(initialFormData);
     const [isSaving, setIsSaving] = useState(false);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null); 
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -43,14 +43,14 @@ const AddDocument: React.FC<AddDocumentProps> = ({ onAddRow,  disabled, onSucces
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         const fields = [
-            formData.fecha, 
-            formData['exp. mesa de partes / sec. gen.'], 
-            formData['dependencia / usuario'], 
+            formData.fecha,
+            formData['exp. mesa de partes / sec. gen.'],
+            formData['dependencia / usuario'],
             formData.asunto
         ];
-        
+
         if (fields.some(val => val.trim() === '')) {
             alert('Por favor, complete todos los campos obligatorios.');
             return;
@@ -59,13 +59,13 @@ const AddDocument: React.FC<AddDocumentProps> = ({ onAddRow,  disabled, onSucces
         setIsSaving(true);
         try {
             await onAddRow(formData, selectedFile || undefined);
-            setFormData(initialFormData); 
-            setSelectedFile(null); 
+            setFormData(initialFormData);
+            setSelectedFile(null);
             if (fileInputRef.current) {
                 fileInputRef.current.value = "";
             }
 
-            onSuccess?.(); 
+            onSuccess?.();
         } catch (error) {
             console.error("Error al guardar documento:", error);
             alert("Error al guardar el nuevo documento. Inténtalo de nuevo.");
@@ -77,15 +77,15 @@ const AddDocument: React.FC<AddDocumentProps> = ({ onAddRow,  disabled, onSucces
     const isOperationDisabled = disabled || isSaving;
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2 className="text-2xl font-bold mb-6 text-gray-900  border-b border-gray-200  pb-3">
+        <form onSubmit={handleSubmit} className="text-gray-900 dark:text-gray-100">
+            <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3">
                 ➕ Registrar Nuevo Documento
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mb-8">
-                
+
                 <div className="col-span-1">
-                    <label htmlFor="fecha" className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+                    <label htmlFor="fecha" className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
                         FECHA
                     </label>
                     <input
@@ -95,12 +95,12 @@ const AddDocument: React.FC<AddDocumentProps> = ({ onAddRow,  disabled, onSucces
                         value={formData.fecha}
                         onChange={handleChange}
                         disabled={isOperationDisabled}
-                        className="w-full p-2.5 text-sm border border-gray-300 rounded-lg  transition focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full p-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg transition focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                 </div>
-                
+
                 <div className="col-span-1">
-                    <label htmlFor="exp" className="block text-xs font-semibold text-gray-500  uppercase mb-1">
+                    <label htmlFor="exp" className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
                         EXP. MESA DE PARTES
                     </label>
                     <input
@@ -111,12 +111,12 @@ const AddDocument: React.FC<AddDocumentProps> = ({ onAddRow,  disabled, onSucces
                         onChange={handleChange}
                         placeholder="Ej: 001-2024"
                         disabled={isOperationDisabled}
-                        className="w-full p-2.5 text-sm border border-gray-300 rounded-lg  transition focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full p-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg transition focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                 </div>
-                
+
                 <div className="md:col-span-2">
-                    <label htmlFor="dependencia" className="block text-xs font-semibold text-gray-500  uppercase mb-1">
+                    <label htmlFor="dependencia" className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
                         DEPENDENCIA / USUARIO
                     </label>
                     <input
@@ -127,12 +127,12 @@ const AddDocument: React.FC<AddDocumentProps> = ({ onAddRow,  disabled, onSucces
                         onChange={handleChange}
                         placeholder="Ej: Gerencia de Planificación"
                         disabled={isOperationDisabled}
-                        className="w-full p-2.5 text-sm border border-gray-300 rounded-lg  transition focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full p-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg transition focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                 </div>
-                
+
                 <div className="md:col-span-2">
-                    <label htmlFor="asunto" className="block text-xs font-semibold text-gray-500  uppercase mb-1">
+                    <label htmlFor="asunto" className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
                         ASUNTO
                     </label>
                     <textarea
@@ -143,13 +143,13 @@ const AddDocument: React.FC<AddDocumentProps> = ({ onAddRow,  disabled, onSucces
                         placeholder="Descripción detallada del asunto"
                         rows={2}
                         disabled={isOperationDisabled}
-                        className="w-full p-2.5 text-sm border border-gray-300 rounded-lg  resize-none transition focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full p-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg resize-none transition focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                 </div>
 
                 {/* 👇 Nuevo campo para PDF */}
                 <div className="md:col-span-2">
-                    <label htmlFor="file" className="block text-xs font-semibold text-gray-500  uppercase mb-1">
+                    <label htmlFor="file" className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
                         ARCHIVO PDF (opcional)
                     </label>
                     <input
@@ -159,7 +159,7 @@ const AddDocument: React.FC<AddDocumentProps> = ({ onAddRow,  disabled, onSucces
                         ref={fileInputRef} // 👈 referencia para reset
                         onChange={handleFileChange}
                         disabled={isOperationDisabled}
-                        className="w-full text-sm text-gray-700 "
+                        className="w-full text-sm text-gray-700 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/50 dark:file:text-blue-300"
                     />
                 </div>
             </div>
@@ -167,15 +167,14 @@ const AddDocument: React.FC<AddDocumentProps> = ({ onAddRow,  disabled, onSucces
             <button
                 type="submit"
                 disabled={isOperationDisabled}
-                className={`w-full py-3 px-4 rounded-xl text-lg text-white font-bold transition-all shadow-lg hover:shadow-xl ${
-                    isOperationDisabled
-                        ? 'bg-gray-400 cursor-not-allowed' 
-                        : 'bg-green-600 hover:bg-green-700'
-                }`}
+                className={`w-full py-3 px-4 rounded-xl text-lg text-white font-bold transition-all shadow-lg hover:shadow-xl ${isOperationDisabled
+                        ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
+                        : 'bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700'
+                    }`}
             >
                 {isSaving ? 'Guardando... ⏳' : 'Añadir Nuevo Trámite'}
             </button>
-            
+
         </form>
     );
 };

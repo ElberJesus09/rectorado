@@ -9,64 +9,64 @@ export interface EditDocumentData {
 }
 
 interface EditDocumentProps {
-    initialData: EditDocumentData;  
+    initialData: EditDocumentData;
     onEditRow: (data: EditDocumentData, file?: File) => Promise<void>;
     disabled: boolean;
-    onSuccess?: () => void;          
+    onSuccess?: () => void;
     currentFileName?: string;
 }
 
 // Función para convertir fecha DD/MM/YYYY a YYYY-MM-DD
 const formatDateForInput = (dateString: string): string => {
     if (!dateString) return '';
-    
+
     // Si ya está en formato YYYY-MM-DD, retornar tal cual
     if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
         return dateString;
     }
-    
+
     // Convertir de DD/MM/YYYY a YYYY-MM-DD
     const parts = dateString.split('/');
     if (parts.length === 3) {
         const [day, month, year] = parts;
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     }
-    
+
     return dateString;
 };
 
 // Función para convertir de YYYY-MM-DD a DD/MM/YYYY para guardar
 const formatDateForSave = (dateString: string): string => {
     if (!dateString) return '';
-    
+
     // Si está en formato DD/MM/YYYY, retornar tal cual
     if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
         return dateString;
     }
-    
+
     // Convertir de YYYY-MM-DD a DD/MM/YYYY
     const parts = dateString.split('-');
     if (parts.length === 3) {
         const [year, month, day] = parts;
         return `${day}/${month}/${year}`;
     }
-    
+
     return dateString;
 };
 
-const EditDocument: React.FC<EditDocumentProps> = ({ 
-    initialData, 
-    onEditRow, 
-    disabled, 
+const EditDocument: React.FC<EditDocumentProps> = ({
+    initialData,
+    onEditRow,
+    disabled,
     onSuccess,
-    currentFileName 
+    currentFileName
 }) => {
     // Formatear la fecha inicial para el input
     const [formData, setFormData] = useState<EditDocumentData>({
         ...initialData,
         fecha: formatDateForInput(initialData.fecha)
     });
-    
+
     const [isSaving, setIsSaving] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -109,7 +109,7 @@ const EditDocument: React.FC<EditDocumentProps> = ({
         setIsSaving(true);
         try {
             await onEditRow(dataToSave, selectedFile || undefined);
-            onSuccess?.(); 
+            onSuccess?.();
         } catch (error) {
             console.error("Error al editar la fila:", error);
             alert("Error al guardar los cambios. Inténtalo de nuevo.");
@@ -121,14 +121,14 @@ const EditDocument: React.FC<EditDocumentProps> = ({
     const isOperationDisabled = disabled || isSaving;
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2 className="text-2xl font-bold mb-6 text-gray-900 border-b border-gray-200 pb-3">
+        <form onSubmit={handleSubmit} className="text-gray-900 dark:text-gray-100">
+            <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-3">
                 ✏️ Editar Documento
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mb-8">
                 <div>
-                    <label htmlFor="fecha" className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+                    <label htmlFor="fecha" className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
                         FECHA
                     </label>
                     <input
@@ -138,12 +138,12 @@ const EditDocument: React.FC<EditDocumentProps> = ({
                         value={formData.fecha}
                         onChange={handleChange}
                         disabled={isOperationDisabled}
-                        className="w-full p-2.5 text-sm border border-gray-300 rounded-lg transition focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full p-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg transition focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                 </div>
 
                 <div>
-                    <label htmlFor="exp" className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+                    <label htmlFor="exp" className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
                         EXP. MESA DE PARTES
                     </label>
                     <input
@@ -153,12 +153,12 @@ const EditDocument: React.FC<EditDocumentProps> = ({
                         value={formData['exp. mesa de partes / sec. gen.']}
                         onChange={handleChange}
                         disabled={isOperationDisabled}
-                        className="w-full p-2.5 text-sm border border-gray-300 rounded-lg transition focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full p-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg transition focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                 </div>
 
                 <div className="md:col-span-2">
-                    <label htmlFor="dependencia" className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+                    <label htmlFor="dependencia" className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
                         DEPENDENCIA / USUARIO
                     </label>
                     <input
@@ -168,12 +168,12 @@ const EditDocument: React.FC<EditDocumentProps> = ({
                         value={formData['dependencia / usuario']}
                         onChange={handleChange}
                         disabled={isOperationDisabled}
-                        className="w-full p-2.5 text-sm border border-gray-300 rounded-lg transition focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full p-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg transition focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                 </div>
 
                 <div className="md:col-span-2">
-                    <label htmlFor="asunto" className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+                    <label htmlFor="asunto" className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
                         ASUNTO
                     </label>
                     <textarea
@@ -183,18 +183,18 @@ const EditDocument: React.FC<EditDocumentProps> = ({
                         onChange={handleChange}
                         rows={3}
                         disabled={isOperationDisabled}
-                        className="w-full p-2.5 text-sm border border-gray-300 rounded-lg resize-none transition focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full p-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg resize-none transition focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                 </div>
 
                 {/* 👇 Nuevo campo para archivos en edición */}
                 <div className="md:col-span-2">
-                    <label htmlFor="file" className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+                    <label htmlFor="file" className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
                         ACTUALIZAR ARCHIVO PDF (opcional)
                     </label>
                     {currentFileName && (
-                        <p className="text-sm text-gray-600 mb-2">
-                            Archivo actual: <span className="font-medium">{currentFileName}</span>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                            Archivo actual: <span className="font-medium text-gray-900 dark:text-white">{currentFileName}</span>
                         </p>
                     )}
                     <input
@@ -204,9 +204,9 @@ const EditDocument: React.FC<EditDocumentProps> = ({
                         ref={fileInputRef}
                         onChange={handleFileChange}
                         disabled={isOperationDisabled}
-                        className="w-full text-sm text-gray-700"
+                        className="w-full text-sm text-gray-700 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/50 dark:file:text-blue-300"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
                         Selecciona un nuevo archivo solo si quieres reemplazar el actual
                     </p>
                 </div>
@@ -215,11 +215,10 @@ const EditDocument: React.FC<EditDocumentProps> = ({
             <button
                 type="submit"
                 disabled={isOperationDisabled}
-                className={`w-full py-3 px-4 rounded-xl text-lg text-white font-bold transition-all shadow-lg hover:shadow-xl ${
-                    isOperationDisabled
-                        ? 'bg-gray-400 cursor-not-allowed'
-                        : 'bg-blue-600 hover:bg-blue-700'
-                }`}
+                className={`w-full py-3 px-4 rounded-xl text-lg text-white font-bold transition-all shadow-lg hover:shadow-xl ${isOperationDisabled
+                        ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
+                        : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700'
+                    }`}
             >
                 {isSaving ? 'Guardando cambios... ⏳' : 'Guardar Cambios'}
             </button>

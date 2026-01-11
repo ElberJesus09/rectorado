@@ -58,15 +58,15 @@ const DISPLAY_COLUMNS = [
     { key: "asunto", label: "ASUNTO", width: "min-w-[180px] flex-1" },
 ];
 
-const DataTable: React.FC<DataTableProps> = ({ 
-    rows, 
-    expandedRow, 
-    onToggleRow, 
-    onAddDerivation, 
-    onEditDerivation, 
-    onDeleteDerivation, 
+const DataTable: React.FC<DataTableProps> = ({
+    rows,
+    expandedRow,
+    onToggleRow,
+    onAddDerivation,
+    onEditDerivation,
+    onDeleteDerivation,
     onEditCell,
-    onUploadFile 
+    onUploadFile
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isAdding, setIsAdding] = useState<number | null>(null);
@@ -145,8 +145,8 @@ const DataTable: React.FC<DataTableProps> = ({
     return (
         <>
             <div className="overflow-x-auto rounded-xl">
-                <table className="min-w-full divide-y divide-gray-700 table-fixed bg-white">
-                    <thead className="bg-gray-700 text-white">
+                <table className="min-w-full divide-y divide-gray-700 dark:divide-gray-600 table-fixed bg-white dark:bg-gray-800">
+                    <thead className="bg-gray-700 dark:bg-gray-900 text-white">
                         <tr>
                             {DISPLAY_COLUMNS.map((col) => (
                                 <th
@@ -162,7 +162,7 @@ const DataTable: React.FC<DataTableProps> = ({
                         </tr>
                     </thead>
 
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                         {paginatedRows.map((row: SheetRow, index: number) => {
                             const rowIndex = startIndex + index;
                             const isExpanded = expandedRow === rowIndex;
@@ -175,14 +175,16 @@ const DataTable: React.FC<DataTableProps> = ({
 
                             return (
                                 <React.Fragment key={rowIndex}>
-                                    <tr className="hover:bg-gray-100 transition duration-200 even:bg-gray-50">
+                                    <tr className="hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-200 even:bg-gray-50 dark:even:bg-gray-800/50 text-gray-900 dark:text-gray-100">
                                         {DISPLAY_COLUMNS.map((col) => (
                                             <td
                                                 key={`${rowIndex}-${col.key}`}
                                                 className={`px-3 py-4 align-top ${col.width} whitespace-normal ${col.key === 'fecha' ? 'text-xs' : 'text-sm'}`}
                                             >
                                                 {col.key === "asunto" ? (
-                                                    <ExpandableText text={row[col.key] || "N/A"} limit={250} />
+                                                    <div className="dark:text-white">
+                                                        <ExpandableText text={row[col.key] || "N/A"} limit={250} />
+                                                    </div>
                                                 ) : (
                                                     <div className="break-words font-medium">
                                                         {row[col.key]}
@@ -202,7 +204,7 @@ const DataTable: React.FC<DataTableProps> = ({
                                                         📄 Ver
                                                     </a>
                                                 ) : (
-                                                    <span className="text-gray-400 italic text-xs">Sin enlace</span>
+                                                    <span className="text-gray-400 dark:text-gray-500 italic text-xs">Sin enlace</span>
                                                 )}
 
                                                 <button
@@ -246,20 +248,20 @@ const DataTable: React.FC<DataTableProps> = ({
                                         <tr>
                                             <td
                                                 colSpan={DISPLAY_COLUMNS.length + 1}
-                                                className="bg-gray-50 px-6 py-6"
+                                                className="bg-gray-50 dark:bg-gray-900 px-6 py-6 border-b dark:border-gray-700"
                                             >
                                                 {derivations.length === 0 ? (
-                                                    <p className="text-gray-600">No hay derivaciones registradas.</p>
+                                                    <p className="text-gray-600 dark:text-gray-400">No hay derivaciones registradas.</p>
                                                 ) : (
                                                     <div className="space-y-4">
                                                         {derivations.map((d, i) => (
                                                             editing?.rowIndex === rowIndex && editing.key === d.key ? (
-                                                                <div key={i} className="flex space-x-2 p-4 bg-yellow-100 border-l-4 border-yellow-500 rounded-lg">
+                                                                <div key={i} className="flex space-x-2 p-4 bg-yellow-100 dark:bg-yellow-900/30 border-l-4 border-yellow-500 rounded-lg">
                                                                     <input
                                                                         type="text"
                                                                         value={editing.currentValue}
                                                                         onChange={(e) => setEditing({ ...editing, currentValue: e.target.value })}
-                                                                        className="flex-1 px-3 py-2 border rounded-lg text-sm text-gray-900"
+                                                                        className="flex-1 px-3 py-2 border rounded-lg text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 dark:border-gray-600"
                                                                     />
                                                                     <button
                                                                         onClick={handleEditSave}
@@ -277,10 +279,10 @@ const DataTable: React.FC<DataTableProps> = ({
                                                             ) : (
                                                                 <div
                                                                     key={i}
-                                                                    className="border-l-4 border-blue-600 bg-white shadow-md rounded-lg p-4 flex justify-between items-start"
+                                                                    className="border-l-4 border-blue-600 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 flex justify-between items-start"
                                                                 >
-                                                                    <p className="text-sm text-gray-700 flex-1">
-                                                                        <span className="font-semibold text-blue-700">
+                                                                    <p className="text-sm text-gray-700 dark:text-gray-300 flex-1">
+                                                                        <span className="font-semibold text-blue-700 dark:text-blue-400">
                                                                             {d.key.replace(/_/g, " ")}:
                                                                         </span>{" "}
                                                                         {d.value}
@@ -288,14 +290,14 @@ const DataTable: React.FC<DataTableProps> = ({
                                                                     <div className="flex space-x-2 ml-4">
                                                                         <button
                                                                             onClick={() => setEditing({ rowIndex, key: d.key, currentValue: d.value })}
-                                                                            className="text-yellow-600 hover:text-yellow-800 transition p-1 rounded-full hover:bg-gray-200"
+                                                                            className="text-yellow-600 dark:text-yellow-400 hover:text-yellow-800 dark:hover:text-yellow-300 transition p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
                                                                             title="Editar"
                                                                         >
                                                                             ✏️
                                                                         </button>
                                                                         <button
                                                                             onClick={() => confirmDelete(rowIndex, d.key, d.value)}
-                                                                            className="text-red-600 hover:text-red-800 transition p-1 rounded-full hover:bg-gray-200"
+                                                                            className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
                                                                             title="Eliminar"
                                                                         >
                                                                             🗑️
@@ -308,7 +310,7 @@ const DataTable: React.FC<DataTableProps> = ({
                                                 )}
 
                                                 {addingState && (
-                                                    <p className="text-blue-500 mt-2 font-semibold">Guardando derivación... ⏳</p>
+                                                    <p className="text-blue-500 dark:text-blue-400 mt-2 font-semibold">Guardando derivación... ⏳</p>
                                                 )}
 
                                                 <AddDerivation
@@ -327,20 +329,20 @@ const DataTable: React.FC<DataTableProps> = ({
                 </table>
             </div>
 
-            <div className="flex justify-between items-center mt-0 p-4 border-t border-gray-700">
+            <div className="flex justify-between items-center mt-0 p-4 border-t border-gray-700 dark:border-gray-600 bg-white dark:bg-gray-800">
                 <button
                     disabled={currentPage === 1}
                     onClick={goToPrevPage}
                     className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${currentPage === 1
-                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                        : "bg-gray-300 hover:bg-gray-400 text-gray-800"
+                        ? "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                        : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 text-gray-800 dark:text-white"
                         }`}
                 >
                     Anterior
                 </button>
 
                 <div className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
                         Página
                     </span>
                     <input
@@ -349,9 +351,9 @@ const DataTable: React.FC<DataTableProps> = ({
                         onChange={handlePageInput}
                         min={1}
                         max={totalPages}
-                        className="w-16 px-2 py-1 border rounded text-center text-sm"
+                        className="w-16 px-2 py-1 border rounded text-center text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white dark:border-gray-600"
                     />
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
                         de {totalPages}
                     </span>
                 </div>
@@ -360,8 +362,8 @@ const DataTable: React.FC<DataTableProps> = ({
                     disabled={currentPage === totalPages}
                     onClick={goToNextPage}
                     className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${currentPage === totalPages
-                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                        : "bg-gray-800 hover:bg-gray-900 text-white"
+                        ? "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                        : "bg-gray-800 dark:bg-gray-700 hover:bg-gray-900 dark:hover:bg-gray-600 text-white"
                         }`}
                 >
                     Siguiente
@@ -369,11 +371,11 @@ const DataTable: React.FC<DataTableProps> = ({
             </div>
 
             {docEditing && (
-                <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50">
-                    <div className="bg-white rounded-xl shadow-xl max-w-3xl w-full p-6 relative">
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-3xl w-full p-6 relative">
                         <button
                             onClick={() => setDocEditing(null)}
-                            className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
+                            className="absolute top-3 right-3 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                         >
                             ✖
                         </button>
