@@ -6,11 +6,13 @@ import {
     CLIENT_ID,
     FOLDER_ID,
     SPREADSHEET_ID,
-    SHEET_NAME,
+    DEFAULT_SHEET_NAME,
+    CALENDAR_SHEET_NAME,
     SCOPES,
     DISCOVERY_DOC,
     colIndexToLetter,
 } from "./config";
+
 import type { SheetRow } from "./config";
 declare global {
     interface Window {
@@ -26,12 +28,42 @@ export const useGoogleSheetService = () => {
     const [data, setData] = useState<SheetRow[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isGapiInitialized, setIsGapiInitialized] = useState(false);
+    const [sheetName, setSheetName] = useState(DEFAULT_SHEET_NAME);
+    const [availableSheets, setAvailableSheets] = useState<string[]>([]);
+
 
     const [userProfile, setUserProfile] = useState<{
         name: string;
         email: string;
         imageUrl: string;
     } | null>(null);
+
+    const fetchSheetNames = useCallback(async () => {
+        try {
+            const res = await gapi.client.sheets.spreadsheets.get({
+                spreadsheetId: SPREADSHEET_ID,
+            });
+
+            const sheets = res.result.sheets ?? [];
+
+            const names = sheets
+                .map((s: any) => s.properties?.title)
+                .filter(
+                    (name: string) =>
+                        name &&
+                        name !== CALENDAR_SHEET_NAME // proteger Hoja2
+                );
+
+            setAvailableSheets(names);
+
+            if (!names.includes(sheetName) && names.length > 0) {
+                setSheetName(names[0]);
+            }
+        } catch (err) {
+            console.error("Error obteniendo hojas:", err);
+            setError("No se pudieron cargar las hojas");
+        }
+    }, [sheetName]);
 
     const handleTokenResponse = useCallback((resp: any) => {
         if (resp.error) {
@@ -58,7 +90,10 @@ export const useGoogleSheetService = () => {
         }).catch(() => {
             setUserProfile(null);
         });
-    }, []);
+
+        fetchSheetNames();
+    }, [fetchSheetNames]);
+
 
     const initClient = useCallback(() => {
         if (isGapiInitialized) return;
@@ -115,6 +150,9 @@ export const useGoogleSheetService = () => {
         }
     }, []);
 
+
+
+
     const listData = useCallback(async () => {
         if (!isSignedIn) {
             setError("Debes iniciar sesión para leer los datos.");
@@ -124,7 +162,7 @@ export const useGoogleSheetService = () => {
         try {
             const response = await gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: SPREADSHEET_ID,
-                range: `${SHEET_NAME}!A:Z`,
+                range: `${sheetName}!A:Z`,
             });
 
             const values = response.result.values;
@@ -162,7 +200,7 @@ export const useGoogleSheetService = () => {
             console.error("Error al leer la hoja:", err);
             setError("Fallo al listar los datos.");
         }
-    }, [isSignedIn]);
+    }, [isSignedIn, sheetName]);
 
     const addRow = useCallback(async (newRow: Record<string, any>) => {
         if (!isSignedIn) {
@@ -172,14 +210,14 @@ export const useGoogleSheetService = () => {
         try {
             const currentDataResponse = await gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: SPREADSHEET_ID,
-                range: `${SHEET_NAME}!A:Z`,
+                range: `${sheetName}!A:Z`,
             });
 
             const currentRowCount = currentDataResponse.result.values ? currentDataResponse.result.values.length - 1 : 0;
 
             const headerResponse = await gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: SPREADSHEET_ID,
-                range: `${SHEET_NAME}!A1:Z1`,
+                range: `${sheetName}!A1:Z1`,
             });
 
             const headersRaw: string[] = headerResponse.result.values?.[0] || [];
@@ -213,7 +251,7 @@ export const useGoogleSheetService = () => {
 
             await gapi.client.sheets.spreadsheets.values.append({
                 spreadsheetId: SPREADSHEET_ID,
-                range: `${SHEET_NAME}!A:Z`,
+                range: `${sheetName}!A:Z`,
                 valueInputOption: "USER_ENTERED",
                 insertDataOption: "INSERT_ROWS",
                 resource,
@@ -240,7 +278,7 @@ export const useGoogleSheetService = () => {
         try {
             const headerResponse = await gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: SPREADSHEET_ID,
-                range: `${SHEET_NAME}!A1:Z1`,
+                range: `${sheetName}!A1:Z1`,
             });
 
             const headers = headerResponse.result.values?.[0] || [];
@@ -248,7 +286,7 @@ export const useGoogleSheetService = () => {
 
             const dataRowResponse = await gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: SPREADSHEET_ID,
-                range: `${SHEET_NAME}!A${sheetRowNumber}:Z${sheetRowNumber}`,
+                range: `${sheetName}!A${sheetRowNumber}:Z${sheetRowNumber}`,
             });
 
             const rowValues = dataRowResponse.result.values?.[0] || [];
@@ -279,7 +317,7 @@ export const useGoogleSheetService = () => {
             }
 
             const targetColLetter = colIndexToLetter(targetColIndex);
-            const range = `${SHEET_NAME}!${targetColLetter}${sheetRowNumber}`;
+            const range = `${sheetName}!${targetColLetter}${sheetRowNumber}`;
 
             const resource = {
                 values: [[value]],
@@ -306,8 +344,8 @@ export const useGoogleSheetService = () => {
 
         const headerResponse = await gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: SPREADSHEET_ID,
-            range: `${SHEET_NAME}!A1:Z1`,
-        });
+            range: `${sheetName}!A1:Z1`,
+        }, [sheetName]);
         const headers = headerResponse.result.values?.[0] || [];
 
         let targetColIndex = -1;
@@ -335,7 +373,7 @@ export const useGoogleSheetService = () => {
         return {
             targetColLetter: colIndexToLetter(targetColIndex),
             sheetRowNumber,
-            range: `${SHEET_NAME}!${colIndexToLetter(targetColIndex)}${sheetRowNumber}`
+            range: `${sheetName}!${colIndexToLetter(targetColIndex)}${sheetRowNumber}`
         };
     }, []);
 
@@ -400,7 +438,7 @@ export const useGoogleSheetService = () => {
 
             const headerResponse = await gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: SPREADSHEET_ID,
-                range: `${SHEET_NAME}!A1:Z1`,
+                range: `${sheetName}!A1:Z1`,
             });
             const headers = headerResponse.result.values?.[0] || [];
 
@@ -425,7 +463,7 @@ export const useGoogleSheetService = () => {
             }
 
             const targetColLetter = colIndexToLetter(targetColIndex);
-            const range = `${SHEET_NAME}!${targetColLetter}${sheetRowNumber}`;
+            const range = `${sheetName}!${targetColLetter}${sheetRowNumber}`;
 
             const resource = {
                 values: [[newValue]],
@@ -502,6 +540,11 @@ export const useGoogleSheetService = () => {
         error,
         listData,
         userProfile,
+
+        sheetName,
+        setSheetName,
+        availableSheets,
+
         addRow,
         addDerivationToRow,
         editDerivation,
@@ -509,4 +552,5 @@ export const useGoogleSheetService = () => {
         editCell,
         uploadFileToDrive,
     };
+
 };

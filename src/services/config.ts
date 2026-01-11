@@ -1,7 +1,7 @@
 export const CLIENT_ID = "486408468099-hlh1danal1m7qogpnltti3efgajp08h0.apps.googleusercontent.com";
 export const FOLDER_ID = "1SRESamB-3R1KnteO_jdWCQXMSxAul4to";
-export const SPREADSHEET_ID = "13cfiJZysi_PrDWHBI-MaJMcfUHe4U6pDxdDz3PyuCmA";
-export const SHEET_NAME = "Hoja1";
+export const SPREADSHEET_ID = "12jjoCyExEP0T9kqgYh7JUDuo8-lmAuQGD4LPg-xv_FU";
+export const DEFAULT_SHEET_NAME = "2025";
 export const CALENDAR_SHEET_NAME = "Hoja2"; 
 
 export const SCOPES =
